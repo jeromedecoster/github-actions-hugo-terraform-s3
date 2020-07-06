@@ -1,0 +1,11 @@
+.ignore
+.terraform
+node_modules
+package-lock.json
+secrets.sh
+terraform.plan
+terraform.tfvars
+tfplan
+*.tfstate
+*.tfstate.backup
+public
