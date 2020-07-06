@@ -3,6 +3,7 @@ title: "black and brown mallard duck surrounded by grass"
 description: "black and brown mallard duck surrounded by grass"
 date: "2020-01-04"
 tags: [black, brown]
+draft: false
 ---
 
 ![duck](duck.jpg)

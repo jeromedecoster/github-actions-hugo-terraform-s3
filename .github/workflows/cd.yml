@@ -1,9 +1,15 @@
 name: cd
 
-on: [push]
+on:
+  push:
+    paths:
+      - "content/**"
+      - "extra/**"
+      - "layouts/**"
+      - "static/**"
 
 env:
-  AWS_REGION: "eu-west-3"
+  AWS_REGION: eu-west-3
 
 jobs:
   build:
@@ -22,10 +28,31 @@ jobs:
     - name: Setup Hugo
       uses: peaceiris/actions-hugo@v2
 
-    - name: Build
+    - name: Build with Hugo
       run: hugo --minify
       
     - name: Deploy static site to S3 bucket
       run: |
         cd public
-        aws s3 sync --delete --acl public-read . s3://www.jeromedecoster.net
+        aws s3 sync \
+          --delete \
+          --acl public-read \
+          . s3://www.jeromedecoster.net
+
+    - name: Deploy extras files
+      run: |
+        cd extra
+        aws s3 sync \
+          --acl public-read \
+          . s3://www.jeromedecoster.net
+
+    - name: Cloudfront invalidation
+      run: |
+        aws cloudfront create-invalidation \
+          --distribution-id ${{ secrets.DISTRIBUTION_ID }} \
+          --paths "/" \
+          "/index.html" \
+          "/posts/" \
+          "/posts/index.html" \
+          "/tags/" \
+          "/tags/index.html"

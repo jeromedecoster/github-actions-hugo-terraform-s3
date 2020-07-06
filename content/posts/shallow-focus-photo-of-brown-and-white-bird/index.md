@@ -3,7 +3,7 @@ title: "shallow focus photo of brown and white bird"
 description: "shallow focus photo of brown and white bird"
 date: "2020-01-05"
 tags: [brown, white]
-draft: true
+draft: false
 ---
 
 ![duck](duck.jpg)
