@@ -25,6 +25,6 @@ jobs:
     - run: hugo --minify
       
     - name: Deploy static site to S3 bucket
-        run: |
-          cd public
-          aws s3 sync --acl public-read . s3://www.jeromedecoster.net
+      run: |
+        cd public
+        aws s3 sync --acl public-read . s3://www.jeromedecoster.net
