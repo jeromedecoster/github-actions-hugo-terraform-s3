@@ -1,0 +1,30 @@
+name: cd
+
+on: [push]
+
+env:
+  AWS_REGION: "eu-west-3"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Clone
+      uses: actions/checkout@v2
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Setup Hugo
+      uses: peaceiris/actions-hugo@v2
+
+    - run: hugo --minify
+      
+    - name: Deploy static site to S3 bucket
+        run: |
+          cd public
+          aws s3 sync --acl public-read . s3://www.jeromedecoster.net
