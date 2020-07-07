@@ -24,3 +24,8 @@ resource aws_s3_bucket_policy bucket_policy {
   bucket = aws_s3_bucket.bucket.id
   policy = data.aws_iam_policy_document.policy.json
 }
+
+resource aws_s3_bucket bucket {
+  bucket        = "test.${var.apex_domain}"
+  force_destroy = true
+}
