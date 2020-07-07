@@ -1,0 +1,80 @@
+name: infra
+
+on:
+  push:
+    paths:
+      - "infra/**"
+
+env:
+  AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_REGION: eu-west-3
+
+defaults:
+  run:
+    working-directory: infra
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Clone
+      uses: actions/checkout@v2
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1.1.0
+
+    - name: Terraform Init
+      run: |
+        terraform init
+            -input=false \
+            -backend=true \
+            -backend-config="region=${{ env.AWS_REGION }}" \
+            -backend-config="bucket=${{ secrets.S3_BACKEND }}" \
+            -backend-config="key=terraform" \
+            -reconfigure
+      
+    - name: Terraform Format
+      run: terraform fmt -check
+
+    - name: Terraform Plan
+      run: terraform plan
+    
+    # - name: Configure AWS credentials
+    #   uses: aws-actions/configure-aws-credentials@v1
+    #   with:
+    #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    #     aws-region: ${{ env.AWS_REGION }}
+
+    # - name: Setup Hugo
+    #   uses: peaceiris/actions-hugo@v2
+
+    # - name: Build with Hugo
+    #   run: hugo --minify
+      
+    # - name: Deploy static site to S3 bucket
+    #   run: |
+    #     cd public
+    #     aws s3 sync \
+    #       --delete \
+    #       --acl public-read \
+    #       . s3://www.jeromedecoster.net
+
+    # - name: Deploy extras files
+    #   run: |
+    #     cd extra
+    #     aws s3 sync \
+    #       --acl public-read \
+    #       . s3://www.jeromedecoster.net
+
+    # - name: Cloudfront invalidation
+    #   run: |
+    #     aws cloudfront create-invalidation \
+    #       --distribution-id ${{ secrets.DISTRIBUTION_ID }} \
+    #       --paths "/" \
+    #       "/index.html" \
+    #       "/posts/" \
+    #       "/posts/index.html" \
+    #       "/tags/" \
+    #       "/tags/index.html"

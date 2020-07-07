@@ -1,10 +1,7 @@
-locals {
-  s3_origin = "S3-${replace(var.apex_domain, ".", "-")}"
-}
-
-resource "aws_cloudfront_distribution" "s3_distribution" {
+resource aws_cloudfront_distribution distribution {
+  # https://stackoverflow.com/a/52077634
   provider = aws.us_east_1
-  
+
   origin {
     # https://stackoverflow.com/a/41132075
     domain_name = aws_s3_bucket.bucket.website_endpoint

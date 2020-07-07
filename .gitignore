@@ -9,3 +9,5 @@ tfplan
 *.tfstate
 *.tfstate.backup
 public
+settings.sh
+CNAME.json
