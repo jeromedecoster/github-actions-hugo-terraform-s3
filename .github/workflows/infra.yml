@@ -25,9 +25,9 @@ jobs:
       uses: hashicorp/setup-terraform@v1.1.0
 
     - name: Terraform Init
-      timeout-minutes: 4
+      timeout-minutes: 2
       run: |
-        terraform init
+        terraform init \
             -input=false \
             -backend=true \
             -backend-config="region=${{ env.AWS_REGION }}" \
